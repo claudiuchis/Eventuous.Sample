@@ -5,6 +5,6 @@ post {{host}}/widget
 Content-Type: application/json
 
 {
-    "WidgetId": "66863a53-a36b-4b42-8113-4a8eb0ef17d2"
+    "WidgetId": "66863a53-a36b-4b42-8113-4a8eb0ef17d4"
 }
 

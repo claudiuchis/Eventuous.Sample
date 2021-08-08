@@ -18,9 +18,9 @@ namespace Eventuous.Sample.Application
                     => widget.Create(new WidgetId(cmd.WidgetId))
             );
 
-            OnExisting<ReactWidget>(
+            OnExistingAsync<ReactWidget>(
                 cmd => new WidgetId(cmd.WidgetId),
-                async (widget, cmd)
+                async (widget, cmd, cancellationToken)
                     => await widget.React(externalService)
             );
         }
