@@ -1,0 +1,1 @@
+Tests require the "REST Client" extension for VS Code
