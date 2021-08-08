@@ -5,16 +5,16 @@ using Eventuous.Subscriptions;
 using static Eventuous.Sample.Domain.Events;
 using static Eventuous.Sample.Application.Commands;
 
-namespace Eventuous.Sample.Application
+namespace Eventuous.Sample.Application.Reactions
 {
     public class WidgetReactor : IEventHandler
     {
-        private WidgetService _widgetService;
+        private WidgetCommandService _widgetService;
         public string SubscriptionId { get; }
 
         public WidgetReactor(
             string subscriptionGroup,
-            WidgetService widgetService
+            WidgetCommandService widgetService
         )
         {
             SubscriptionId = subscriptionGroup;
@@ -29,7 +29,7 @@ namespace Eventuous.Sample.Application
         {
             var result = @event switch
             {
-                WidgetCreated created => _widgetService.Handle(
+                V1.WidgetCreated created => _widgetService.Handle(
                     new ReactWidget(created.WidgetId),
                     cancellationToken
                 ),

@@ -9,19 +9,19 @@ using static Eventuous.Sample.Application.Commands;
 namespace Eventuous.Sample.Application
 {
     [ApiController]
-    [Route("[controller]")]
-    public class WidgetController : ControllerBase
+    [Route("/api/widget")]
+    public class WidgetCommandController : ControllerBase
     {
 
-        WidgetService _service;
-        readonly ILogger<WidgetController> _log;
-        public WidgetController(
-            WidgetService service,
+        WidgetCommandService _service;
+        readonly ILogger<WidgetCommandController> _log;
+        public WidgetCommandController(
+            WidgetCommandService service,
             ILoggerFactory loggerFactory
         )
         {
             _service = service;
-            _log = loggerFactory.CreateLogger<WidgetController>();
+            _log = loggerFactory.CreateLogger<WidgetCommandController>();
         } 
         
         [HttpPost]
@@ -33,6 +33,10 @@ namespace Eventuous.Sample.Application
                 return Ok();
             }
             catch(DomainException e) 
+            {
+                return BadRequest(e.Message);
+            }
+            catch(ArgumentNullException e)
             {
                 return BadRequest(e.Message);
             }

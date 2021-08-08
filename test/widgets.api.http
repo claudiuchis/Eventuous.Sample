@@ -1,0 +1,13 @@
+@host = https://localhost:5001
+
+###
+post {{host}}/api/widget
+Content-Type: application/json
+
+{
+    "WidgetId": "66863a53-a36b-4b42-8113-4a8eb0ef17d2",
+    "WidgetName": "RoundPeg"
+}
+
+###
+get {{host}}/api/widget?widgetId=66863a53-a36b-4b42-8113-4a8eb0ef17d2

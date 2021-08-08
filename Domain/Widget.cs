@@ -9,27 +9,29 @@ namespace Eventuous.Sample.Domain
 
     public class Widget : Aggregate<WidgetState, WidgetId>
     {
-        public void Create(WidgetId id)
+        public void Create(WidgetId id, WidgetName name)
         {
             EnsureDoesntExist();
-            Apply(new WidgetCreated(id));
+            Apply(new V1.WidgetCreated(id, name));
         }
 
         public async Task React(IExternalService service)
         {
             await service.ExecuteAsync();
-            Apply(new WidgetReacted(GetId()));
+            Apply(new V1.WidgetReacted(GetId()));
         }
     }
 
     public record WidgetState : AggregateState<WidgetState, WidgetId> 
     {
+        public WidgetName Name { get; init; }
         public override WidgetState When(object @event)
             => @event switch {
-                WidgetCreated created => this with {
-                    Id = new WidgetId(created.WidgetId)
+                V1.WidgetCreated created => this with {
+                    Id = new WidgetId(created.WidgetId),
+                    Name = new WidgetName(created.WidgetName)
                 },
-                WidgetReacted reacted => this,
+                V1.WidgetReacted reacted => this,
                 _ => this
             };
     }

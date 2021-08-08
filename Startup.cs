@@ -23,6 +23,9 @@ using Eventuous.EventStoreDB;
 using Eventuous.Sample.Application;
 using Eventuous.Sample.Domain;
 using Eventuous.Sample.Infrastructure;
+using Eventuous.Sample.Application.Projections;
+using Eventuous.Sample.Application.Reactions;
+using Eventuous.Sample.Application.Queries;
 
 namespace Eventuous.Sample
 {
@@ -50,6 +53,7 @@ namespace Eventuous.Sample
                 .AddMongoStore(Configuration["MongoDB"])
                 .AddCustomServices()
                 .AddReactions()
+                .AddProjections()
             ;
         }
 
@@ -84,17 +88,49 @@ namespace Eventuous.Sample
         {
             services
                 .AddSingleton<IExternalService, ExternalService>()
-                .AddSingleton<WidgetService>()
+                .AddSingleton<WidgetCommandService>()
+                .AddSingleton<WidgetQueryService>()
                 ;
             return services;
         }
+
+        public static IServiceCollection AddProjections(
+            this IServiceCollection services)
+        {
+            services
+                .AddSingleton<IHostedService, AllStreamSubscription>( provider => {
+                    var subscriptionId = "projections";
+                    var loggerFactory = provider.GetLoggerFactory();
+
+                    return new AllStreamSubscription(
+                        provider.GetEventStoreClient(),
+                        subscriptionId,
+                        new MongoCheckpointStore(
+                            provider.GetMongoDatabase(),
+                            loggerFactory.CreateLogger<MongoCheckpointStore>()
+                        ),
+                        new IEventHandler[] { 
+                            new WidgetProjector(
+                                provider.GetMongoDatabase(), 
+                                subscriptionId, 
+                                loggerFactory
+                            )
+                        },
+                        DefaultEventSerializer.Instance,
+                        loggerFactory
+                    );
+
+                });
+
+            return services;
+        }        
 
         public static IServiceCollection AddReactions(
             this IServiceCollection services)
         {
             services
-                .AddHostedService<AllStreamSubscription>( provider => {
-                    var subscriptionId = "identity.reactions";
+                .AddSingleton<IHostedService, AllStreamSubscription>( provider => {
+                    var subscriptionId = "reactions";
                     var loggerFactory = provider.GetLoggerFactory();
 
                     return new AllStreamSubscription(
@@ -110,7 +146,7 @@ namespace Eventuous.Sample
                         new IEventHandler[] { 
                             new WidgetReactor(
                                 subscriptionId, 
-                                provider.GetRequiredService<WidgetService>()
+                                provider.GetRequiredService<WidgetCommandService>()
                             )
                         },
                         DefaultEventSerializer.Instance,

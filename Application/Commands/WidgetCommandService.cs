@@ -5,9 +5,9 @@ using static Eventuous.Sample.Application.Commands;
 
 namespace Eventuous.Sample.Application
 {
-    public class WidgetService : ApplicationService<Widget, WidgetState, WidgetId>
+    public class WidgetCommandService : ApplicationService<Widget, WidgetState, WidgetId>
     {
-        public WidgetService(
+        public WidgetCommandService(
             IAggregateStore store,
             IExternalService externalService
         ) : base(store)
@@ -15,7 +15,10 @@ namespace Eventuous.Sample.Application
             OnAny<CreateWidget>(
                 cmd => new WidgetId(cmd.WidgetId),
                 (widget, cmd)
-                    => widget.Create(new WidgetId(cmd.WidgetId))
+                    => widget.Create(
+                        new WidgetId(cmd.WidgetId), 
+                        new WidgetName(cmd.WidgetName)
+                    )
             );
 
             OnExistingAsync<ReactWidget>(

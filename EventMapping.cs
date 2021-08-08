@@ -8,8 +8,8 @@ namespace Eventuous.Sample
     {
         public static void MapEventTypes()
         {
-            TypeMap.AddType<WidgetCreated>("WidgetCreated");
-            TypeMap.AddType<WidgetReacted>("WidgetReacted");
+            TypeMap.AddType<V1.WidgetCreated>("WidgetCreated");
+            TypeMap.AddType<V1.WidgetReacted>("WidgetReacted");
         }
     }
 }
