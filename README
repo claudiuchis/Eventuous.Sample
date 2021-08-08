@@ -1,1 +1,11 @@
 Sample project that uses the Eventuous framework for building event-driven applications.
+
+The sample covers basic examples for:
+- commands
+- queries
+- projections
+- reactions
+
+More about the Eventuous framework:
+- https://eventuous.dev/
+- https://github.com/Eventuous/eventuous
