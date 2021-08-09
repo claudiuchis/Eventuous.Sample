@@ -4,6 +4,7 @@ namespace Eventuous.Sample.Application.Projections
 {
     public record WidgetDetails(
         string WidgetId, 
-        string WidgetName
+        string WidgetName,
+        bool Reacted
     ) : ProjectedDocument(WidgetId);
 }

@@ -15,6 +15,10 @@ namespace Eventuous.Sample.Domain
             Apply(new V1.WidgetCreated(id, name));
         }
 
+        /*
+            This is an example of an aggregate method which calls an external service, 
+            e.g. send an email after a user signs up.
+        */
         public async Task React(IExternalService service)
         {
             await service.ExecuteAsync();
@@ -25,13 +29,18 @@ namespace Eventuous.Sample.Domain
     public record WidgetState : AggregateState<WidgetState, WidgetId> 
     {
         public WidgetName Name { get; init; }
+        public bool Reacted { get; init; }
+
         public override WidgetState When(object @event)
             => @event switch {
                 V1.WidgetCreated created => this with {
                     Id = new WidgetId(created.WidgetId),
-                    Name = new WidgetName(created.WidgetName)
+                    Name = new WidgetName(created.WidgetName),
+                    Reacted = false
                 },
-                V1.WidgetReacted reacted => this,
+                V1.WidgetReacted reacted => this with {
+                    Reacted = true
+                },
                 _ => this
             };
     }

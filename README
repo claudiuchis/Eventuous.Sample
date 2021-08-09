@@ -4,7 +4,14 @@ The sample covers basic examples for:
 - commands
 - queries
 - projections
-- reactions
+- reactions (one reaction for a domain event that sends a request to an external service, e.g. a real world scenario is to asynchronously send an email after an user signs up).
+
+To run the sample:
+- start the databases (EventStoreDB and MongoDB) using the provided docker-compose.yml file ("docker-compose up").
+- if using Visual Studio Code, install the "REST Client" extension, and run the tests from the test/widgets.api.http file.
+- open the EventStoreDB stream browser page (http://localhost:2113/web/index.html#/streams) to see the newly created stream; if you click on this stream there should be 2 events: one for creating the widget, the other for reacting to the widget created event.
+- open the MongoDB Express collections page (http://localhost:8081/db/readside) to see the projection created (WidgetDetails collection); 
+there is also a collection for the checkpoints, with 2 documents: projections (for the projections subscription) and reactions (for the reactions subscription); these are defined in Startup.cs (AddProjections and AddReactions methods)
 
 More about the Eventuous framework:
 - https://eventuous.dev/

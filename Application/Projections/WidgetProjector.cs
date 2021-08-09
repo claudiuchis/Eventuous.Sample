@@ -26,7 +26,15 @@ namespace Eventuous.Sample.Application.Projections
                         created.WidgetId, 
                         u => u.Set(d => d.WidgetId, created.WidgetId)
                             .Set(d => d.WidgetName, created.WidgetName)
+                            .Set(d => d.Reacted, false)
                     ),
+
+                V1.WidgetReacted reacted
+                    => UpdateOperationTask(
+                        reacted.WidgetId,
+                        u => u.Set(d => d.Reacted, true)
+                    ),
+                    
                 _ => NoOp
             };   
         }
